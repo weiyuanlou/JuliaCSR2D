@@ -28,12 +28,12 @@ function qts_will(f::Function, h0::Float64, maxlevel::Integer=6)
     k = 1
     while true
         t = k*h0
-        xk, wk = samplepoint_will(t)  # Note that t
+        xk, wk = samplepoint_will(t)  
         1 - xk ≤ eps(T) && break   # xk is too close to 1, the upper bound of integral
         wk ≤ floatmin(T) && break  # wk is too small, series trucated
         
         Σ += (f(xk) + f(-xk)) * wk
-        k += 1    # step is either 1 for level = 0
+        k += 1    # step is either 1 (for level = 0) or 2
 
     end    
     I = h0*Σ
@@ -45,12 +45,12 @@ function qts_will(f::Function, h0::Float64, maxlevel::Integer=6)
         h = h0/2^level
         while true
             t = k*h
-            xk, wk = samplepoint_will(t)  # Note that t
+            xk, wk = samplepoint_will(t)  
             1 - xk ≤ eps(T) && break   # xk is too close to 1, the upper bound of integral
             wk ≤ floatmin(T) && break  # wk is too small, series trucated
 
             Σ += (f(xk) + f(-xk)) * wk
-            k += 2    # step is either 1 for level = 0
+            k += 2     # step is either 1 (for level = 0) or 2
 
         end     
         
@@ -74,7 +74,7 @@ end
 
 # In contrast to qts_will which integrates from -1 to 1
 # QTS_will integrates from a to b
-function QTS_will(f::Function, a::Float64, b::Float64)
+function QTS_will(f::Function, a::Float64, b::Float64, M::Int)
     s = (b + a)/2
     t = (b - a)/2
 
@@ -83,8 +83,8 @@ function QTS_will(f::Function, a::Float64, b::Float64)
     #I*t, E*t
     
     h0 = 1.0
-    maxlevel = 12 # A large maxlevel may be slow if the integral does not converge...
-    I = qts_will(u-> f(s+t*u), h0, maxlevel)
+    #maxlevel = 12 # A large maxlevel may be slow if the integral does not converge...
+    I = qts_will(u-> f(s+t*u), h0, M)
     return I*t   
 
 end 

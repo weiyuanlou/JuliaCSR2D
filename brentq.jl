@@ -183,15 +183,14 @@ function find_root_Will(f::Function, x0::Float64, x1::Float64, n::Int)
     If not found, the function returns -1.0.
     """
     
-    
-    root_found_flag = 0
     root = -1.0
     
     dx = (x1-x0)/n
     
     sign0 = sign(f(x0))
+    xtemp = x0
     for i in 1:n
-        xtemp = x0 + dx*i
+        xtemp += dx
         sign1 = sign(f(xtemp))
         
         if sign0 != sign1
