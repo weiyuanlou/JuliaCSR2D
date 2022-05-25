@@ -6,8 +6,8 @@ function f_root_case_B(a::Float64, z::Float64, x::Float64, beta::Float64)
 end
 
 function alpha_exact_case_B_brentq(z::Float64, x::Float64, beta::Float64)
-    f_root_case_B_x(a) = f_root_case_B(a, z, x, beta)
-    return brentq(f_root_case_B_x, -0.1, 1)
+    f_root_case_B_x(a::Float64) = f_root_case_B(a, z, x, beta)
+    return brentq(f_root_case_B_x, -0.1, 1.0)
 end
 
 function Es_case_B(z::Float64, x::Float64, gamma::Float64)
@@ -97,8 +97,8 @@ end
 
 
 function alpha_exact_case_D_brentq(z::Float64, x::Float64, beta::Float64, lamb::Float64)
-    f_root_case_D_x(a) = f_root_case_D(a, z, x, beta, lamb)
-    return brentq(f_root_case_D_x, -0.1, 1)
+    f_root_case_D_x(a::Float64) = f_root_case_D(a, z, x, beta, lamb)
+    return brentq(f_root_case_D_x, -0.1, 1.0)
 end
 
 

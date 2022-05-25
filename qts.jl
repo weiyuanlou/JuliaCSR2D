@@ -15,6 +15,39 @@ function estimate_error_will(prevI, I)
 end
 
 
+function qts_will_2(f::Function, h0::Float64, maxlevel::Integer=6)
+
+    #@assert maxlevel > 0
+    #@assert h0 > 0
+    
+    T = Float64
+    
+    x0, w0 = samplepoint_will(0.0)  #origin
+    Σ = f(x0)*w0
+   
+    k = 1
+    while true
+        #t = k*h0/2^maxlevel
+        xk, wk = samplepoint_will(k*h0/2^maxlevel)  
+        1 - xk ≤ eps(T) && break   # xk is too close to 1, the upper bound of integral
+        wk ≤ floatmin(T) && break  # wk is too small, series trucated
+        
+        Σ += (f(xk) + f(-xk)) * wk
+        k += 1    # step is either 1 (for level = 0) or 2
+
+    end    
+    h = h0/2^maxlevel
+    I = h*Σ
+    
+    #h = h0/2^maxlevel
+    #return h*Σ
+    return I
+    #return I, E
+
+end
+
+
+
 function qts_will(f::Function, h0::Float64, maxlevel::Integer=6)
 
     #@assert maxlevel > 0
@@ -82,9 +115,10 @@ function QTS_will(f::Function, a::Float64, b::Float64, M::Int)
     #I, E = q.qts(u -> f(s + t*u); atol=atol/t, rtol=rtol)
     #I*t, E*t
     
-    h0 = 1.0
+    #h0 = 1.0
     #maxlevel = 12 # A large maxlevel may be slow if the integral does not converge...
-    I = qts_will(u-> f(s+t*u), h0, M)
+    I = qts_will(u-> f(s+t*u), 1.0, M)
+    
     return I*t   
 
 end 

@@ -30,7 +30,7 @@ end
 
 #typeof(_ECONVERGED)
 
-function brentq(f, a::Real, b::Real)
+function brentq(f::Function, a::Float64, b::Float64)
     xtol=_xtol
     rtol=_rtol
     maxiter=_iter
