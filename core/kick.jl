@@ -46,7 +46,8 @@ function compute_Ws_case_A_GPU!(A::CuDeviceArray, Δ, charge_grid::CuDeviceArray
 end
 
 
-function compute_Wx_case_B_GPU!(A::CuDeviceArray, Δ, charge_grid::CuDeviceArray, gamma, rho, phi, nxp, sigma_z, sigma_x)
+function compute_Wx_case_B_GPU!(A::CuDeviceArray, Δ, charge_grid::CuDeviceArray, 
+        gamma, rho, phi, nxp, sigma_z, sigma_x)
     
     index = (blockIdx().x - 1) * blockDim().x + threadIdx().x
     stride = gridDim().x * blockDim().x
@@ -66,7 +67,8 @@ function compute_Wx_case_B_GPU!(A::CuDeviceArray, Δ, charge_grid::CuDeviceArray
     
 end
 
-function compute_Wx_case_A_GPU!(A::CuDeviceArray, Δ, charge_grid::CuDeviceArray, gamma, rho, phi, nxp, sigma_z, sigma_x)
+function compute_Wx_case_A_GPU!(A::CuDeviceArray, Δ, charge_grid::CuDeviceArray, 
+        gamma, rho, phi, nxp, sigma_z, sigma_x)
     
     index = (blockIdx().x - 1) * blockDim().x + threadIdx().x
     stride = gridDim().x * blockDim().x
