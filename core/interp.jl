@@ -1,13 +1,13 @@
 ## This function is GPU compatible
 function interp_will(z, x, grid, zmin, zmax, xmin, xmax)
 ###
-    # Given the 2D grid g(zp,xp) with coordinates (zp, xp) defined by zmin, zmax, xmin, xmax, 
-    # returns the value of f(z,x) via bilinear interpolation    
+    # Given a 2D grid g(zp,xp) with coordinates (zp, xp) defined by zmin, zmax, xmin, xmax, 
+    # returns the value of f(z,x) via bilinear interpolation.
+    # The grid is assumed to have a costant dz and dx.
 ###
     
     nz = size(grid)[1]
     nx = size(grid)[2]
-    
     
     dz = (zmax - zmin) / (nz-1)
     dx = (xmax - xmin) / (nx-1)
