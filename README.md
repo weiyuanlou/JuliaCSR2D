@@ -1,16 +1,15 @@
 # JuliaCSR2D
 Computes the 2D transient CSR wakes using Julia.
-The theory (https://journals.aps.org/prab/pdf/10.1103/PhysRevAccelBeams.24.064402) assumes a relativistic $\gamma$ and constant bending radius $\rho$  
-
+The theory (https://journals.aps.org/prab/pdf/10.1103/PhysRevAccelBeams.24.064402) assumes a relativistic $\gamma$ and a constant bending radius $\rho$.  
 
 Transient wake = entrance wake ( case A+B ) and exit wake ( case C+D+E ).
 
 ===================================================
 
-To run Julia Jupyter notebooks, follow https://datatofish.com/add-julia-to-jupyter/
+To run Julia on Jupyter notebooks, follow https://datatofish.com/add-julia-to-jupyter/
 
 ===================================================
-
+## Codes ##
 -- All main codes are inside the "core/" directory.
 
 -- Functions for wake computation are in core/integrator.jl. One can use CPU to compute the wake value at a single observation point with these functions. 
@@ -20,6 +19,7 @@ To run Julia Jupyter notebooks, follow https://datatofish.com/add-julia-to-jupyt
 -- The simple_track.jl includes the tracking code for a hard-edge dipole and drift.
 
 =================================================
+## Examples ##
 
 The most updated example is track_FACET.ipynb, which includes the code for chicane tracking with 2D CSR. These tracking codes will soon be migrated into the core directory for general use. When running this notebook, choose the Gaussian beam, and skip the ASTRA beam and FACET beam definition since the beam files are not open to public.  
 
