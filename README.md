@@ -1,5 +1,10 @@
 # JuliaCSR2D
 Compute the 2D transient CSR wakes using Julia.
+
+Transient wake = entrance wake ( case A+B ) and exit wake ( case C+D+E ).
+
+===================================================
+
 To run Julia Jupyter notebooks, follow https://datatofish.com/add-julia-to-jupyter/
 
 ===================================================
