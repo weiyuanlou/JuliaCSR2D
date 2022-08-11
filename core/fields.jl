@@ -321,7 +321,7 @@ end
 
 function Es_case_E(z::Float64, x::Float64, gamma::Float64)
     """
-    Eq.(B5) from Ref[1] with no constant factor e**2/gamma**2.
+    Eq.(B5) from Ref[1] with no constant factor e/gamma**2.
     """
   
     #if z == 0 and x == 0:
@@ -340,9 +340,29 @@ function Es_case_E(z::Float64, x::Float64, gamma::Float64)
 
 end
     
+function Fx_case_E(z::Float64, x::Float64, gamma::Float64)
+    """
+    Eq.(B5) from Ref[1] with no constant factor e**2/gamma**4.
+    """
+  
+    #if z == 0 and x == 0:
+    #    return 0
+    
+    beta2 = 1-1/gamma^2
+    beta = sqrt(beta2)
+    
+    L = (z + beta*sqrt(x^2*(1-beta2) + z^2))/(1-beta2)
+    
+    S = sqrt(x^2 + L^2)
+    D = S-beta*L
+  
+    return x/D^3
+
+end
+
 function psi_s_case_E(z::Float64, x::Float64, gamma::Float64)
     """
-    Eq.(B5) from Ref[1] with no constant factor 1/gamma**2.
+    Eq.(B5) from Ref[1] with no constant factor -1/gamma**2.
     """
   
     #if z == 0 and x == 0:
@@ -354,4 +374,24 @@ function psi_s_case_E(z::Float64, x::Float64, gamma::Float64)
     L = (z + beta*sqrt(x^2*(1-beta2) + z^2))/(1-beta2)
     
     return 1/(sqrt(x^2 + L^2) - beta*L)
+end
+
+function psi_x_case_E(z::Float64, x::Float64, gamma::Float64)
+    """
+    Eq.(B5) from Ref[1] with no constant factor -1/gamma**2.
+    """
+  
+    #if z == 0 and x == 0:
+    #    return 0
+    
+    beta2 = 1-1/gamma^2
+    beta = sqrt(beta2)
+    
+    L = (z + beta*sqrt(x^2*(1-beta2) + z^2))/(1-beta2)
+    
+    N1 = beta*x^2 - (1-beta2)*L*sqrt(x^2 + L^2)
+    D = x*(x^2 + L^2*(1-beta^2))
+    
+    
+    return N1/D
 end 

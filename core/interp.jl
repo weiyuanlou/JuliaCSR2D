@@ -20,6 +20,10 @@ function interp_will(z, x, grid, zmin, zmax, xmin, xmax)
         z_ix = convert(Int, ceil( (z-zmin)/dz )) 
         x_ix = convert(Int, ceil( (x-xmin)/dx )) 
         
+        if z_ix+1 > nz || x_ix+1 > nx
+            return 0.0
+        end
+        
         z1 = zmin + (z_ix-1)*dz
         z2 = zmin + (z_ix)*dz
         x1 = xmin + (x_ix-1)*dx
