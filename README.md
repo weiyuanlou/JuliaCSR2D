@@ -21,7 +21,7 @@ To run Julia on Jupyter notebooks, follow https://datatofish.com/add-julia-to-ju
 =================================================
 ## Examples ##
 
-The most updated example is track_FACET.ipynb, which includes the code for chicane tracking with 2D CSR. These tracking codes will soon be migrated into the core directory for general use. When running this notebook, choose the Gaussian beam, and skip the ASTRA beam and FACET beam definition since the beam files are not open to public.  
+The most updated example is track_FACET.ipynb, which includes the code for chicane tracking with 2D CSR. These tracking codes will soon be migrated into the core directory for general use. When running this notebook, choose the Gaussian beam, and skip the ASTRA beam and FACET beam definition since these beam files are not open to public.  
 
 All other example notebooks are to be updated.
 
