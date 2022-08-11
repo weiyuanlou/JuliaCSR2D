@@ -1,5 +1,7 @@
 # JuliaCSR2D
-Compute the 2D transient CSR wakes using Julia.
+Computes the 2D transient CSR wakes using Julia.
+The theory (https://journals.aps.org/prab/pdf/10.1103/PhysRevAccelBeams.24.064402) assumes a relativistic $\gamma$ and constant bending radius $\rho$  
+
 
 Transient wake = entrance wake ( case A+B ) and exit wake ( case C+D+E ).
 
