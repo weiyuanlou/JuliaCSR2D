@@ -14,7 +14,7 @@ To run Julia on Jupyter notebooks, follow https://datatofish.com/add-julia-to-ju
 
 -- Functions for wake computation are in core/integrator.jl. One can use CPU to compute the wake value at a single observation point with these functions. 
 
--- To compute the wake value on an enitre grid of observation points, parallel computation on GPU is recommended to save time. These GPU-required functions, along with the functions calculating the resultant CSR kicks at the particle positions, are in core/kick2.jl, which is the top-level code file.   
+-- To compute many wake values on an enitre grid of observation points, parallel computation on GPU is recommended to save time. These GPU-required functions, along with the functions calculating the resultant CSR $kicks$ at the particle positions, are available in core/kick2.jl.   
 
 -- The simple_track.jl includes the tracking code for a hard-edge dipole and drift.
 
