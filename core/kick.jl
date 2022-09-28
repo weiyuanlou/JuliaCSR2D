@@ -1,3 +1,7 @@
+### This entire file is OBSOLETE
+### Functions here can be useful templates for development
+### Use kick2.jl for updated functions !!
+
 using CUDA
 include("integrator.jl")
 include("deposit.jl")
