@@ -360,6 +360,7 @@ function Fx_case_E(z::Float64, x::Float64, gamma::Float64)
 
 end
 
+## OBSOLETE
 function psi_s_case_E(z::Float64, x::Float64, gamma::Float64)
     """
     Eq.(B5) from Ref[1] with no constant factor -1/gamma**2.
@@ -376,6 +377,7 @@ function psi_s_case_E(z::Float64, x::Float64, gamma::Float64)
     return 1/(sqrt(x^2 + L^2) - beta*L)
 end
 
+## OBSOLETE
 function psi_x_case_E(z::Float64, x::Float64, gamma::Float64)
     """
     Eq.(B5) from Ref[1] with no constant factor -1/gamma**2.

@@ -14,7 +14,7 @@ function estimate_error_will(prevI, I)
     return M*norm(I - prevI)^2 + norm(I)*ε
 end
 
-
+# OBSOLETE
 function qts_will_2(f::Function, h0::Float64, maxlevel::Integer=6)
 
     #@assert maxlevel > 0

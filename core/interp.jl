@@ -44,7 +44,7 @@ end
 
 
 
-
+# OBSOLETE
 function find_nearest_index(array, x)
     for i =1:length(array)-1
         if array[i] <= x && x < array[i+1]
@@ -54,7 +54,7 @@ function find_nearest_index(array, x)
     println("No index found...")
 end
 
-
+# OBSOLETE
 function interp_will2(z::Float64, x::Float64, grid, zvec, xvec)
     
     zmin = zvec[1]
