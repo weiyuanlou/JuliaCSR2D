@@ -24,11 +24,12 @@ Required julia packages are listed in packages.jl
 =================================================
 ## Examples ##
 
-examples/convergence_test.ipynb: Check convergence of the computed wake at one observation point as numerical parameters $\nxp$ and $M$ increase.
+(1) examples/convergence_test.ipynb: Check convergence of the computed wake at one observation point as numerical parameters $nxp$ and $M$ increase.
                                  Users can load in customized lattice parameters and beam file to check convergence. 
                                  
-examples/wake_grid_computation.ipynb: (GPU required) Compute the entrance/exit $W_s$ and $W_x$ wake grids using a set of lattice parameters and beam.               
-track_FACET.ipynb: includes the code for chicane tracking with 2D CSR. These tracking codes will soon be migrated into the core directory for general use. When running this notebook, choose the Gaussian beam, and skip the ASTRA beam and FACET beam definition since these beam files are not open to public.  
+(2) examples/wake_grid_computation.ipynb: (GPU required) Compute the entrance/exit $W_s$ and $W_x$ wake grids using a set of lattice parameters and beam.               
+
+(3) track_FACET.ipynb: includes the code for chicane tracking with 2D CSR. These tracking codes will soon be migrated into the core directory for general use. When running this notebook, choose the Gaussian beam, and skip the ASTRA beam and FACET beam definition since these beam files are not open to public.  
 
 All other example notebooks are to be updated.
 
