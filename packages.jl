@@ -6,4 +6,5 @@ Pkg.add("ColorSchemes")
 Pkg.add("Distributions")
 Pkg.add("LaTeXStrings")
 Pkg.add("QuadGK")
+Pkg.add("CUDA")
 
