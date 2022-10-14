@@ -80,7 +80,7 @@ function QTS_case_B(z_ob::Real, x_ob::Real,
     if dimension == 1
         iii = z -> Es_case_B((z_ob-z)/2/rho, (x_ob-xp)/rho, gamma)*lamb_b( z, xp )
     elseif dimension == 2
-        iii = z -> Fx_case_B((z_ob-z)/2/rho, (x_ob-xp)/rho, gamma)*lamb_b( z, xp )
+        iii = z -> Fx_case_B_SC((z_ob-z)/2/rho, (x_ob-xp)/rho, gamma)*lamb_b( z, xp )
     end
     
     ## boundary conditions
