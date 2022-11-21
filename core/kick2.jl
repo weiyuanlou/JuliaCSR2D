@@ -12,7 +12,7 @@ function compute_entrance_wake_GPU!(A::CuDeviceArray, Δ, lambda_grid::CuDeviceA
     stride = gridDim().x * blockDim().x
     
     dz, dx = Δ
-    nz, nx =  size(A) 
+    nz, nx = size(A) 
     for i = index:stride:length(A)
         ij = @inbounds CartesianIndices(A)[i]
    
@@ -21,11 +21,11 @@ function compute_entrance_wake_GPU!(A::CuDeviceArray, Δ, lambda_grid::CuDeviceA
         
         wA = compute_wake_case_A(z, x, 
             gamma=gamma, rho=rho, phi=phi, nxp=nxp, M=M-1, 
-            charge_grid=lambda_grid, zmin=zmin, zmax=zmax, xmin=xmin, xmax=xmax, dimension=dimension)
+            lambda_grid=lambda_grid, zmin=zmin, zmax=zmax, xmin=xmin, xmax=xmax, dimension=dimension)
         
         wB = compute_wake_case_B(z, x, 
             gamma=gamma, rho=rho, phi=phi, nxp=nxp, M=M, 
-            charge_grid=lambda_grid, zmin=zmin, zmax=zmax, xmin=xmin, xmax=xmax, dimension=dimension)
+            lambda_grid=lambda_grid, zmin=zmin, zmax=zmax, xmin=xmin, xmax=xmax, dimension=dimension)
         
         @inbounds A[i] = wA + wB
         
@@ -45,7 +45,7 @@ function compute_exit_wake_GPU_boundary!(A::CuDeviceArray, Δ, lambda_grid::CuDe
     stride = gridDim().x * blockDim().x
     
     dz, dx = Δ
-    nz, nx =  size(A) 
+    nz, nx = size(A) 
     for i = index:stride:length(A)
         ij = @inbounds CartesianIndices(A)[i]
         
@@ -54,18 +54,18 @@ function compute_exit_wake_GPU_boundary!(A::CuDeviceArray, Δ, lambda_grid::CuDe
         
         wD = compute_wake_case_D(z, x, 
             gamma=gamma, rho=rho, phi_m=phi_m, lamb=lamb, nxp=nxp, M=M, 
-            charge_grid=lambda_grid, zmin=zmin, zmax=zmax, xmin=xmin, xmax=xmax, dimension=dimension)
+            lambda_grid=lambda_grid, zmin=zmin, zmax=zmax, xmin=xmin, xmax=xmax, dimension=dimension)
         
         # Case E does NOT take phi_m
         wE = compute_wake_case_E_boundary_far(z, x, 
             gamma=gamma, rho=rho, lamb=lamb, nxp=nxp, M=M, 
-            charge_grid=lambda_grid, zmin=zmin, zmax=zmax, xmin=xmin, xmax=xmax, dimension=dimension)
+            lambda_grid=lambda_grid, zmin=zmin, zmax=zmax, xmin=xmin, xmax=xmax, dimension=dimension)
 
         
         if include_case_C
             wC = compute_wake_case_C(z, x, 
                 gamma=gamma, rho=rho, phi_m=phi_m, lamb=lamb, nxp=nxp, M=M, 
-                charge_grid=lambda_grid, zmin=zmin, zmax=zmax, xmin=xmin, xmax=xmax, dimension=dimension)
+                lambda_grid=lambda_grid, zmin=zmin, zmax=zmax, xmin=xmin, xmax=xmax, dimension=dimension)
             
             @inbounds A[i] = wC + wD + wE
             
@@ -89,7 +89,7 @@ function compute_exit_wake_GPU!(A::CuDeviceArray, Δ, lambda_grid::CuDeviceArray
     stride = gridDim().x * blockDim().x
     
     dz, dx = Δ
-    nz, nx =  size(A) 
+    nz, nx = size(A) 
     for i = index:stride:length(A)
         ij = @inbounds CartesianIndices(A)[i]
         
@@ -98,17 +98,17 @@ function compute_exit_wake_GPU!(A::CuDeviceArray, Δ, lambda_grid::CuDeviceArray
            
         wD = compute_wake_case_D(z, x, 
             gamma=gamma, rho=rho, phi_m=phi_m, lamb=lamb, nxp=nxp, M=M, 
-            charge_grid=lambda_grid, zmin=zmin, zmax=zmax, xmin=xmin, xmax=xmax, dimension=dimension)
+            lambda_grid=lambda_grid, zmin=zmin, zmax=zmax, xmin=xmin, xmax=xmax, dimension=dimension)
         
         # Case E does NOT take phi_m
         wE = compute_wake_case_E(z, x, 
             gamma=gamma, rho=rho, lamb=lamb, nxp=nxp, M=M, 
-            charge_grid=lambda_grid, zmin=zmin, zmax=zmax, xmin=xmin, xmax=xmax, dimension=dimension)
+            lambda_grid=lambda_grid, zmin=zmin, zmax=zmax, xmin=xmin, xmax=xmax, dimension=dimension)
         
         if include_case_C
             wC = compute_wake_case_C(z, x, 
                 gamma=gamma, rho=rho, phi_m=phi_m, lamb=lamb, nxp=nxp, M=M, 
-                charge_grid=lambda_grid, zmin=zmin, zmax=zmax, xmin=xmin, xmax=xmax, dimension=dimension)
+                lambda_grid=lambda_grid, zmin=zmin, zmax=zmax, xmin=xmin, xmax=xmax, dimension=dimension)
             
             @inbounds A[i] = wC + wD + wE
             
@@ -127,7 +127,8 @@ end
 
 function csr2d_kick_calc_entrance(z_b, x_b, weight;
     gamma::Real, rho::Real, phi::Real,
-    nz::Int, nx::Int, nxp::Int, M::Int, reverse_bend::Bool=false)
+    nz::Int, nx::Int, nz_cg::Int, nx_cg::Int, M::Int, nxp::Int, 
+    reverse_bend::Bool=false)
     
     if reverse_bend
         x_b = - x_b
@@ -139,21 +140,26 @@ function csr2d_kick_calc_entrance(z_b, x_b, weight;
     xmin = minimum(x_b)
     xmax = maximum(x_b)
     
-    
     dz = (zmax - zmin) / (nz - 1)
     dx = (xmax - xmin) / (nx - 1)
     Δ = (dz, dx)
     
-    zv = LinRange(zmin, zmax, nz);
-    xv = LinRange(xmin, xmax, nx);
+    zv = LinRange(zmin, zmax, nz)
+    xv = LinRange(xmin, xmax, nx)
+
+    ##### Charge grid calculation #####
+    dz_cg = (zmax - zmin) / (nz_cg - 1)
+    dx_cg = (xmax - xmin) / (nx_cg - 1)
 
     # Charge deposition
     println(" Applying charge deposition...")
-    charge_grid = histogram_cic_2d(z_b, x_b, weight, nz, zmin, zmax, nx, xmin, xmax)
+    charge_grid = histogram_cic_2d(z_b, x_b, weight, nz_cg, zmin, zmax, nx_cg, xmin, xmax)
     
     # Normalize charge grid
-    nn = sum(charge_grid) *dz*dx
+    nn = sum(charge_grid) *dz_cg*dx_cg
     lambda_grid = charge_grid ./ nn
+    
+    ###################################
     
     
     ##### Applying GPU ####
@@ -215,7 +221,7 @@ end
 ## OBSOLETE
 function csr2d_kick_calc_exit_boundary(z_b, x_b, weight;
     gamma::Real, rho::Real, phi_m::Real, lamb::Real,
-    nz::Int, nx::Int, nxp::Int, M::Int, 
+    nz::Int, nx::Int, nz_cg::Int, nx_cg::Int, M::Int, nxp::Int, 
     reverse_bend::Bool=false, include_case_C::Bool=true)
 
     if reverse_bend
@@ -234,12 +240,19 @@ function csr2d_kick_calc_exit_boundary(z_b, x_b, weight;
     zv = LinRange(zmin, zmax, nz);
     xv = LinRange(xmin, xmax, nx);
 
+    ##### Charge grid calculation #####
+    dz_cg = (zmax - zmin) / (nz_cg - 1)
+    dx_cg = (xmax - xmin) / (nx_cg - 1)
+
     # Charge deposition
     println(" Applying charge deposition...")
-    charge_grid = histogram_cic_2d(z_b, x_b, weight, nz, zmin, zmax, nx, xmin, xmax)
+    charge_grid = histogram_cic_2d(z_b, x_b, weight, nz_cg, zmin, zmax, nx_cg, xmin, xmax)
     
-    nn = sum(charge_grid) *dz*dx
+    # Normalize charge grid
+    nn = sum(charge_grid) *dz_cg*dx_cg
     lambda_grid = charge_grid ./ nn
+    
+    ###################################
     
     
     ##### Applying GPU ####
@@ -313,7 +326,7 @@ end
 
 function csr2d_kick_calc_exit(z_b, x_b, weight;
     gamma::Real, rho::Real, phi_m::Real, lamb::Real,
-    nz::Int, nx::Int, nxp::Int, M::Int, 
+    nz::Int, nx::Int, nz_cg::Int, nx_cg::Int, M::Int, nxp::Int,
     reverse_bend::Bool=false, include_case_C::Bool=true)
 
     if reverse_bend
@@ -329,16 +342,22 @@ function csr2d_kick_calc_exit(z_b, x_b, weight;
     dx = (xmax - xmin) / (nx - 1)
     Δ = (dz, dx)
     
-    zv = LinRange(zmin, zmax, nz);
-    xv = LinRange(xmin, xmax, nx);
+    zv = LinRange(zmin, zmax, nz)
+    xv = LinRange(xmin, xmax, nx)
+
+    ##### Charge grid calculation #####
+    dz_cg = (zmax - zmin) / (nz_cg - 1)
+    dx_cg = (xmax - xmin) / (nx_cg - 1)
 
     # Charge deposition
     println(" Applying charge deposition...")
-    charge_grid = histogram_cic_2d(z_b, x_b, weight, nz, zmin, zmax, nx, xmin, xmax)
+    charge_grid = histogram_cic_2d(z_b, x_b, weight, nz_cg, zmin, zmax, nx_cg, xmin, xmax)
     
-    # Normalize the charge grid
-    nn = sum(charge_grid) *dz*dx
+    # Normalize charge grid
+    nn = sum(charge_grid) *dz_cg*dx_cg
     lambda_grid = charge_grid ./ nn
+    
+    
     
     
     ##### Applying GPU ####

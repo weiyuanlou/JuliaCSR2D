@@ -9,11 +9,11 @@ include("interp.jl")
 # All arguments must be input in the correct order
 function QTS_case_D(z_ob::Real, x_ob::Real, 
         gamma::Real, rho::Real, phi_m::Real, lamb::Real, xp::Real, M::Int,
-        charge_grid, zmin, zmax, xmin, xmax, dimension::Int)
+        lambda_grid, zmin, zmax, xmin, xmax, dimension::Int)
     
     beta = (1-1/gamma^2)^(1/2)
     
-    lamb_b(z, x) = interp_will(z, x, charge_grid, zmin, zmax, xmin, xmax)
+    lamb_b(z, x) = interp_will(z, x, lambda_grid, zmin, zmax, xmin, xmax)
     
     if dimension == 1
         iii = z -> Es_case_D((z_ob-z)/2/rho, (x_ob-xp)/rho, gamma, lamb)*lamb_b( z, xp )
@@ -71,16 +71,17 @@ end
 
 function QTS_case_B(z_ob::Real, x_ob::Real, 
         gamma::Real, rho::Real, phi::Real, xp::Real, M::Int,
-        charge_grid, zmin, zmax, xmin, xmax, dimension::Int)
+        lambda_grid, zmin, zmax, xmin, xmax, dimension::Int)
     
     beta = (1-1/gamma^2)^(1/2)
       
-    lamb_b(z, x) = interp_will(z, x, charge_grid, zmin, zmax, xmin, xmax)
+    lamb_b(z, x) = interp_will(z, x, lambda_grid, zmin, zmax, xmin, xmax)
     
     if dimension == 1
         iii = z -> Es_case_B((z_ob-z)/2/rho, (x_ob-xp)/rho, gamma)*lamb_b( z, xp )
     elseif dimension == 2
-        iii = z -> Fx_case_B_SC((z_ob-z)/2/rho, (x_ob-xp)/rho, gamma)*lamb_b( z, xp )
+        #iii = z -> Fx_case_B_SC((z_ob-z)/2/rho, (x_ob-xp)/rho, gamma)*lamb_b( z, xp )
+        iii = z -> Fx_case_B((z_ob-z)/2/rho, (x_ob-xp)/rho, gamma)*lamb_b( z, xp )
     end
     
     ## boundary conditions
@@ -133,12 +134,12 @@ end
 
 function QTS_case_A(z_ob::Real, x_ob::Real, 
         gamma::Real, rho::Real, phi::Real, xp::Real, M::Int,
-        charge_grid, zmin, zmax, xmin, xmax, dimension::Int)
+        lambda_grid, zmin, zmax, xmin, xmax, dimension::Int)
     
     beta = (1-1/gamma^2)^(1/2)
     alp_ob = phi/2
     
-    lamb_b(z, x) = interp_will(z, x, charge_grid, zmin, zmax, xmin, xmax)
+    lamb_b(z, x) = interp_will(z, x, lambda_grid, zmin, zmax, xmin, xmax)
     
     if dimension == 1
         iii = z -> Es_case_A((z_ob-z)/2/rho, (x_ob-xp)/rho, gamma, alp_ob)*lamb_b(z,xp)
@@ -157,12 +158,12 @@ end
 
 function QTS_case_C(z_ob::Real, x_ob::Real, 
         gamma::Real, rho::Real, phi_m::Real, lamb::Real, xp::Real, M::Int,
-        charge_grid, zmin, zmax, xmin, xmax, dimension::Int)
+        lambda_grid, zmin, zmax, xmin, xmax, dimension::Int)
     
     beta = (1-1/gamma^2)^(1/2)
     alp_m = phi_m/2
     
-    lamb_b(z, x) = interp_will(z, x, charge_grid, zmin, zmax, xmin, xmax)
+    lamb_b(z, x) = interp_will(z, x, lambda_grid, zmin, zmax, xmin, xmax)
     
     if dimension == 1
         iii = z -> Es_case_C((z_ob-z)/2/rho, (x_ob-xp)/rho, gamma, alp_m, lamb)*lamb_b(z,xp)
@@ -181,11 +182,11 @@ end
 
 function QTS_case_E(z_ob::Real, x_ob::Real, 
         gamma::Real, rho::Real, lamb::Real, xp::Real, M::Int,
-        charge_grid, zmin, zmax, xmin, xmax, dimension::Int)
+        lambda_grid, zmin, zmax, xmin, xmax, dimension::Int)
 
     beta = (1-1/gamma^2)^(1/2)
     
-    lamb_b(z, x) = interp_will(z, x, charge_grid, zmin, zmax, xmin, xmax)    
+    lamb_b(z, x) = interp_will(z, x, lambda_grid, zmin, zmax, xmin, xmax)    
 
     if dimension == 1
         iii = z -> Es_case_E((z_ob-z), (x_ob-xp), gamma)*lamb_b(z,xp)
@@ -226,7 +227,7 @@ end
 
 function compute_wake_case_D(z_ob::Real, x_ob::Real; 
         gamma::Real, rho::Real, phi_m::Real, lamb::Real, nxp::Int, M::Int,
-        charge_grid, zmin, zmax, xmin, xmax, dimension::Int)
+        lambda_grid, zmin, zmax, xmin, xmax, dimension::Int)
 
     xp_min = xmin
     xp_max = xmax
@@ -238,7 +239,7 @@ function compute_wake_case_D(z_ob::Real, x_ob::Real;
     for i in 1:1:length(xp_vec)
 
         sum += QTS_case_D(z_ob, x_ob, gamma, rho, phi_m, lamb, xp_vec[i], M,
-                            charge_grid, zmin, zmax, xmin, xmax, dimension)
+                            lambda_grid, zmin, zmax, xmin, xmax, dimension)
         
     end
     
@@ -250,7 +251,7 @@ end
 
 function compute_wake_case_B(z_ob::Real, x_ob::Real; 
         gamma::Real, rho::Real, phi::Real, nxp::Int, M::Int,
-        charge_grid, zmin, zmax, xmin, xmax, dimension::Int)
+        lambda_grid, zmin, zmax, xmin, xmax, dimension::Int)
     
     xp_max = xmax
     xp_min = xmin
@@ -261,7 +262,7 @@ function compute_wake_case_B(z_ob::Real, x_ob::Real;
     
     for i in 1:1:length(xp_vec)
         sum += QTS_case_B(z_ob, x_ob, gamma, rho, phi, xp_vec[i], M,
-                            charge_grid, zmin, zmax, xmin, xmax, dimension) 
+                            lambda_grid, zmin, zmax, xmin, xmax, dimension) 
     end
     
     beta2 = 1-1/gamma^2
@@ -272,7 +273,7 @@ end
 
 function compute_wake_case_A(z_ob::Real, x_ob::Real; 
         gamma::Real, rho::Real, phi::Real, nxp::Int, M::Int,
-        charge_grid, zmin, zmax, xmin, xmax, dimension::Int)
+        lambda_grid, zmin, zmax, xmin, xmax, dimension::Int)
 
     xp_min = xmin 
     xp_max = xmax
@@ -283,7 +284,7 @@ function compute_wake_case_A(z_ob::Real, x_ob::Real;
     
     for i in 1:1:length(xp_vec)
         sum += QTS_case_A(z_ob, x_ob, gamma, rho, phi, xp_vec[i], M,
-                    charge_grid, zmin, zmax, xmin, xmax, dimension)   
+                    lambda_grid, zmin, zmax, xmin, xmax, dimension)   
     end
     
     return sum* dxp/rho^2/gamma^2
@@ -292,7 +293,7 @@ end
 
 function compute_wake_case_C(z_ob::Real, x_ob::Real; 
         gamma::Real, rho::Real, phi_m::Real, lamb::Real, nxp::Int, M::Int,
-        charge_grid, zmin, zmax, xmin, xmax, dimension::Int)
+        lambda_grid, zmin, zmax, xmin, xmax, dimension::Int)
 
     xp_min = xmin 
     xp_max = xmax
@@ -303,7 +304,7 @@ function compute_wake_case_C(z_ob::Real, x_ob::Real;
     
     for i in 1:1:length(xp_vec)
         sum += QTS_case_C(z_ob, x_ob, gamma, rho, phi_m, lamb, xp_vec[i], M,
-                    charge_grid, zmin, zmax, xmin, xmax, dimension)   
+                    lambda_grid, zmin, zmax, xmin, xmax, dimension)   
     end
     
     return sum* dxp/rho^2/gamma^2
@@ -313,7 +314,7 @@ end
 # Include both boundary terms and integral term
 function compute_wake_case_E(z_ob::Real, x_ob::Real; 
         gamma::Real, rho::Real, lamb::Real, nxp::Int, M::Int,
-        charge_grid, zmin, zmax, xmin, xmax, dimension::Int)
+        lambda_grid, zmin, zmax, xmin, xmax, dimension::Int)
 
     xp_min = xmin 
     xp_max = xmax
@@ -324,7 +325,7 @@ function compute_wake_case_E(z_ob::Real, x_ob::Real;
     
     for i in 1:1:length(xp_vec)
         sum += QTS_case_E(z_ob, x_ob, gamma, rho, lamb, xp_vec[i], M,
-                    charge_grid, zmin, zmax, xmin, xmax, dimension)   
+                    lambda_grid, zmin, zmax, xmin, xmax, dimension)   
     end
     
     return sum* (1/gamma^2)*dxp
@@ -335,11 +336,11 @@ end
 ## OBSOLETE
 function compute_wake_case_E_boundary(z_ob::Real, x_ob::Real; 
         gamma::Real, rho::Real, lamb::Real, nxp::Int, M::Int,
-        charge_grid, zmin, zmax, xmin, xmax, dimension::Int)
+        lambda_grid, zmin, zmax, xmin, xmax, dimension::Int)
     
     beta = (1-1/gamma^2)^(1/2)
     
-    lamb_b(z, x) = interp_will(z, x, charge_grid, zmin, zmax, xmin, xmax)    
+    lamb_b(z, x) = interp_will(z, x, lambda_grid, zmin, zmax, xmin, xmax)    
     
   ## integral    
     #iii1(z::Float64) =  psi_s_case_E((z_ob-z), (x_ob-xp), gamma)*lamb_2d_dz(z,xp)
@@ -397,11 +398,11 @@ end
 ## OBSOLETE
 function compute_wake_case_E_boundary_far(z_ob::Real, x_ob::Real; 
         gamma::Real, rho::Real, lamb::Real, nxp::Int, M::Int,
-        charge_grid, zmin, zmax, xmin, xmax, dimension::Int)
+        lambda_grid, zmin, zmax, xmin, xmax, dimension::Int)
     
     beta = (1-1/gamma^2)^(1/2)
     
-    lamb_b(z, x) = interp_will(z, x, charge_grid, zmin, zmax, xmin, xmax)    
+    lamb_b(z, x) = interp_will(z, x, lambda_grid, zmin, zmax, xmin, xmax)    
     
   ## integral    
     #iii1(z::Float64) =  psi_s_case_E((z_ob-z), (x_ob-xp), gamma)*lamb_2d_dz(z,xp)

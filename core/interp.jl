@@ -6,8 +6,7 @@ function interp_will(z, x, grid, zmin, zmax, xmin, xmax)
     # The grid is assumed to have a costant dz and dx.
 ###
     
-    nz = size(grid)[1]
-    nx = size(grid)[2]
+    nz, nx = size(grid)
     
     dz = (zmax - zmin) / (nz-1)
     dx = (xmax - xmin) / (nx-1)
