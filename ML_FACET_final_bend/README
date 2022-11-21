@@ -1,0 +1,7 @@
+To run track.jl in bash, type:
+
+julia track.jl 0 0.1:0.1:5.0 0.2
+
+The 1st arg (0) is the GPU device number starting from 0 
+The 2nd arg (0.1:0.1:5.0) is the range of x_factor (MUST ALL BE FLOAT, NOT INT )
+The 3rd arg (0.2) is the z_factor  (MUST BE FLOAT, not INT )
