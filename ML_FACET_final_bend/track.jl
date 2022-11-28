@@ -138,7 +138,7 @@ z_factor = parse(Float64, ARGS[3])
 
 
 for x_factor in x_factor_range
-    println("Tracking for x_factor = ", x_factor,  "z_factor = ", z_factor)
+    println("Tracking for x_factor = ", x_factor,  ", z_factor = ", z_factor)
     track_and_save(x_factor, z_factor)
 end
 
