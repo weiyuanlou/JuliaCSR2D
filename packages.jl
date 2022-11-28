@@ -7,4 +7,5 @@ Pkg.add("Distributions")
 Pkg.add("LaTeXStrings")
 Pkg.add("QuadGK")
 Pkg.add("CUDA")
+Pkg.add("HDF5")
 
